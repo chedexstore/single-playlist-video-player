@@ -53,7 +53,7 @@ button {
 
 <h1>YouTube Playlist Player</h1>
 
-<input id="playlistUrl" placeholder="Paste YouTube playlist link here">
+<input id="playlistUrl" value="https://www.youtube.com/watch?v=a9uk7d4qMVE&list=PLVoRVpvcF8tZzWWieZTllezjd9slteJmi">
 <button onclick="loadPlaylist()">Play Playlist</button>
 
 <div id="player"></div>
@@ -63,9 +63,23 @@ button {
 <script>
 let player;
 
+// DEFAULT PLAYLIST ID
+const DEFAULT_PLAYLIST = "PLVoRVpvcF8tZzWWieZTllezjd9slteJmi";
+
 function extractPlaylistID(url) {
   const match = url.match(/[?&]list=([^&]+)/);
   return match ? match[1] : null;
+}
+
+// Auto load default playlist when API is ready
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player("player", {
+    playerVars: {
+      autoplay: 1,
+      listType: "playlist",
+      list: DEFAULT_PLAYLIST
+    }
+  });
 }
 
 function loadPlaylist() {
@@ -77,23 +91,10 @@ function loadPlaylist() {
     return;
   }
 
-  if (player) {
-    player.loadPlaylist({
-      listType: "playlist",
-      list: playlistId
-    });
-  } else {
-    player = new YT.Player("player", {
-      playerVars: {
-        autoplay: 1,
-        listType: "playlist",
-        list: playlistId
-      },
-      events: {
-        onReady: e => e.target.playVideo()
-      }
-    });
-  }
+  player.loadPlaylist({
+    listType: "playlist",
+    list: playlistId
+  });
 }
 </script>
 
