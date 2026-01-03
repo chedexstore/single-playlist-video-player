@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>YouTube Playlist Player</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+h1 {
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #ff0000;
+  color: white;
+}
+
+#player {
+  margin-top: 25px;
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 16 / 9;
+}
+</style>
+</head>
+
+<body>
+
+<h1>YouTube Playlist Player</h1>
+
+<input id="playlistUrl" placeholder="Paste YouTube playlist link here">
+<button onclick="loadPlaylist()">Play Playlist</button>
+
+<div id="player"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+let player;
+
+function extractPlaylistID(url) {
+  const match = url.match(/[?&]list=([^&]+)/);
+  return match ? match[1] : null;
+}
+
+function loadPlaylist() {
+  const url = document.getElementById("playlistUrl").value;
+  const playlistId = extractPlaylistID(url);
+
+  if (!playlistId) {
+    alert("Invalid playlist URL");
+    return;
+  }
+
+  if (player) {
+    player.loadPlaylist({
+      listType: "playlist",
+      list: playlistId
+    });
+  } else {
+    player = new YT.Player("player", {
+      playerVars: {
+        autoplay: 1,
+        listType: "playlist",
+        list: playlistId
+      },
+      events: {
+        onReady: e => e.target.playVideo()
+      }
+    });
+  }
+}
+</script>
+
+</body>
+</html>
